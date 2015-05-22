@@ -12,7 +12,7 @@ The software is distributed with source code and requires a C++ compiler to gene
 * Matlab: missing instructions
 
 ## Input data:
-The primary input data is a flat text file with each row representing a datapoint. There should be only three columns per row, corresponding to the source county index, destination county index and observed y value. All data should be numeric, with the third column ranging from 1 to 9. An example input file [`data.txt`](data.txt) is included in the package.
+The primary input data is a flat text file with each row representing a datapoint. There should be only three columns per row, corresponding to the source county index, destination county index and observed y value. All data should be numeric, with the third column ranging from 1 to 9. An example input file [`data.txt`](linux/data.txt) is included in the package.
 ## Running program:
 The general command line syntax to run the program is
 
@@ -41,16 +41,16 @@ Currently, all outputs are saved into one file under the same directory where th
 
 # File list
 Links are to the Linux version.
-* cmdline.h:  a helper class for parsing command line options.
-* MersenneTwister.h:  A Mersenne Twister random number generator.
-* model.h: the header file to be used when linking to other programs such as Matlab or R.
-* SpecicalFunctions.h, SpecicalFunctions.cpp:  a C++ class that implements some functions used by the program. It has more than we need as we only use the gammarand from it. We can remove many functions from it if necessary.
-* stfafx.h:  a standard header file including all the utilities I need from ANSI C++/
-* model.cpp:  all functions related to model implementation are implemented here. I did not pack it in a class, so it is much easier to be used as a library to link into Matlab,R or SAS, etc.
-* mtcd.cpp:  the main function to implement the standalone program.
-* data.txt: an example input data file.
+* [`cmdline.h`](linux/cmdline.h):  a helper class for parsing command line options.
+* [`MersenneTwister.h`](linux/MersenneTwister.h):  A Mersenne Twister random number generator.
+* [`model.h`](linux/model.h): the header file to be used when linking to other programs such as Matlab or R.
+* [`SpecicalFunctions.h`](linux/SpecicalFunctions.h), [`SpecicalFunctions.cpp`](linux/SpecicalFunctions.cpp):  a C++ class that implements some functions used by the program. It has more than we need as we only use the `gammarand` from it. We can remove many functions from it if necessary.
+* [`stfafx.h`](linux/stfafx.h):  a standard header file including all the utilities I need from ANSI C++/
+* [`model.cpp`](linux/model.cpp):  all functions related to model implementation are implemented here. I did not pack it in a class, so it is much easier to be used as a library to link into Matlab, R or SAS, etc.
+* [`mtcd.cpp`](linux/mtcd.cpp):  the main function to implement the standalone program.
+* [`data.txt`](linux/data.txt): an example input data file.
 * Syntheticdata.txt: an example output datafile.
-* makefile:  the default makefile for Linux/Mac OS compilation.
+* [`makefile`](linux/makefile):  the default makefile for Linux/Mac OS compilation.
 
 * Optional output:
 When the `–v`  (verbose) option is provided, the program will also output two extra files. One is for all saved model parameters and another one is for risk measure probability matrix for individual synthetic data sets.
