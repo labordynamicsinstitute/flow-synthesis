@@ -8,6 +8,7 @@
 ## Software package, Compilation and installation:
 The software is distributed with source code and requires a C++ compiler to generate the binary executable file for targeting platform.  It has been tested using `gcc` for linux and Mac OS and Microsoft Visual C++ for Windows.
 * To compile on linux, simply `cd linux` and then type `make` to get the executable.
+* To compile on Mac, simply `cd linux` and then type `make` to get the executable.
 * To compile on Windows, simply add all `.cpp` and `.h` files to a new project and compile the project.  There is no need to install the program and one can run it by copying it to a working folder or using full path in terminal window.
 * Matlab: missing instructions
 
