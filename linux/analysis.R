@@ -14,3 +14,7 @@ cor(syntheticdata$y,syntheticdata$sd1)
 table(syntheticdata$y,syntheticdata$sd1)
 colSums(syntheticdata[,c("y","sd1")])
 
+# checking sums for original sample data where all sample counts y<10
+system("./mtcd -n=100 -m=10 data.txt")
+syntheticdata <- read.table("syntheticdata.txt", header=TRUE, quote="\"")
+colSums(syntheticdata[,c("y","sd1","sd2","sd3","sd4","sd5","sd6")])
