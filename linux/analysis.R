@@ -10,3 +10,7 @@ syntheticdata <- read.table("syntheticdata.txt", header=TRUE, quote="\"")
 # have a look at the first implicate
 summary(syntheticdata$sd1)
 table(syntheticdata$sd1)
+cor(syntheticdata$y,syntheticdata$sd1)
+table(syntheticdata$y,syntheticdata$sd1)
+colSums(syntheticdata[,c("y","sd1")])
+
