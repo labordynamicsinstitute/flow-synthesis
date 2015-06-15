@@ -1,6 +1,6 @@
 # Synthesizing Truncated Count Data for Confidentiality (flow-synthesis)
 
-`mtcd`  is a standalone  C++ implementation of the statistical model proposed in "Synthesizing Truncated Count Data for Confidentiality".  
+`mtcd`  is a standalone  C++ implementation of the statistical model proposed in "Synthesizing Truncated Count Data for Confidentiality" ([local copy](doc/NTTS2013Paper123.pdf)).  
 
 1. The program is writing in ANSI/C++ and can be compiled and ran on all major operating systems such as Linux, Windows and Mac OS. The software is self-contained and does not require any third party library for support.
 2. The program is implemented as a command line utility. It does not have a graphical user interface (GUI) and can only be run from a terminal window or from within another program using system calls.
@@ -9,12 +9,14 @@
 The software is distributed with source code and requires a C++ compiler to generate the binary executable file for targeting platform.  It has been tested using `gcc` for linux and Mac OS and Microsoft Visual C++ for Windows.
 * To compile on linux, simply `cd linux` and then type `make` to get the executable.
 * To compile on Mac, simply `cd linux` and then type `make` to get the executable.
-* To compile on Windows, simply add all `.cpp` and `.h` files to a new project and compile the project.  There is no need to install the program and one can run it by copying it to a working folder or using full path in terminal window.
+* To compile on Windows, simply add all `.cpp` and `.h` files to a new project and compile the project.  
 * Matlab: missing instructions
 
+
 ## Input data:
-The primary input data is a flat text file with each row representing a datapoint. There should be only three columns per row, corresponding to the source county index, destination county index and observed y value. All data should be numeric, with the third column ranging from 1 to 9. An example input file [`data.txt`](linux/data.txt) is included in the package.
+The primary input data is a flat text file with each row representing a datapoint. There should be only three columns per row, corresponding to the source county index, destination county index and observed y value. All data should be numeric, with the **third column ranging from 1 to 9** (i.e., only data that are to be protected should be included on the data file). An example input file [`data.txt`](linux/data.txt) is included in the package.
 ## Running program:
+There is no need to install the program and one can run it by copying it to a working folder or using full path in terminal window.
 The general command line syntax to run the program is
 
 	  	mtcd  –n=num [options] input_data_file_name
