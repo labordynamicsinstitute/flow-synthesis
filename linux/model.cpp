@@ -6,7 +6,9 @@ using namespace std;
 SpecialFunctions sf;
 
 //The upper truncated limmit for Poisson
-#define UPPERLIMIT 8
+//#define UPPERLIMIT 8
+//commented out since this is made an input
+
 
 /* MCMC initilization
 	Input:
@@ -290,7 +292,7 @@ void SampleMuPhi(double *Para, int N, double PHI, double sigma_square, double ga
 */
 double* DoModel(double *data, double *new_data, int n,  
         int niters, int burnin, int stride, 
-        int& betaAcc, int& gammaAcc, int& numberofmodels, int& B, int& G, MTRand& mt) {
+        int& betaAcc, int& gammaAcc, int& numberofmodels, int& B, int& G, MTRand& mt, int in_upper) {
     int i;
     
     
@@ -321,8 +323,8 @@ double* DoModel(double *data, double *new_data, int n,
         count++;
         double *BETA = current_para + 4;
         double *GAMMA = BETA + B;
-        betaAcc  += SampleBG(new_data, BETA, GAMMA, current_para[0], current_para[1], 0, beta_c,  UPPERLIMIT, 0, n, B, G,BETA,mt);
-        gammaAcc += SampleBG(new_data, BETA, GAMMA, current_para[2], current_para[3], 1, gamma_d, UPPERLIMIT, 0, n, B, G,GAMMA,mt);
+        betaAcc  += SampleBG(new_data, BETA, GAMMA, current_para[0], current_para[1], 0, beta_c,  in_upper, 0, n, B, G,BETA,mt);
+        gammaAcc += SampleBG(new_data, BETA, GAMMA, current_para[2], current_para[3], 1, gamma_d, in_upper, 0, n, B, G,GAMMA,mt);
         SampleMuPhi(BETA, B, current_para[1], sigma_square, ga, gb, current_para+0, current_para+1, mt);
         SampleMuPhi(GAMMA,G, current_para[3], sigma_square, ga, gb, current_para+2, current_para+3, mt);
         
@@ -482,7 +484,7 @@ double *ReadData(int n, int ncol, string infile, int verbose) {
 	return data;
 }
 
-void CalculateRiskSummary(double *data, int n, double *riskmeasure, double *result) {
+void CalculateRiskSummary(double *data, int n, double *riskmeasure, double *result, int in_upper) {
 	int *rt = new int[n];
 	int *at = new int[n];
 	int *arg_y = new int[n];
@@ -494,15 +496,15 @@ void CalculateRiskSummary(double *data, int n, double *riskmeasure, double *resu
 	for (i =0; i < n;i++) {
 		//find the maximum value
 		double dmax = -1;
-		for (j=0; j < UPPERLIMIT+1; j++) {
-			if (riskmeasure[i *(UPPERLIMIT+1) + j] > dmax) { dmax = riskmeasure[i *(UPPERLIMIT+1) + j];}
+		for (j=0; j < in_upper+1; j++) {
+			if (riskmeasure[i *(in_upper+1) + j] > dmax) { dmax = riskmeasure[i *(in_upper+1) + j];}
 		}
 
 		//
 		rt[i] = 0;
 		arg_y[i] = -1;
-		for (j=0; j < UPPERLIMIT+1; j++) {
-			if (fabs(riskmeasure[i *(UPPERLIMIT+1) + j] - dmax) < 1e-20) {
+		for (j=0; j < in_upper+1; j++) {
+			if (fabs(riskmeasure[i *(in_upper+1) + j] - dmax) < 1e-20) {
 				int y = (int)data[i*	ncol + 2];
 				if (y == j+1) {
 					rt[i]++;
@@ -555,7 +557,7 @@ void CalculateRiskSummary(double *data, int n, double *riskmeasure, double *resu
 
 }
 void Run(string infile, int n, unsigned int seed, int niters, int burnin, int stride, string outfile, 
-		 string syndatafile, string riskfile, int m, bool verbose) {
+		 string syndatafile, string riskfile, int m, bool verbose, int in_upper) {
 	
 	int i,j;
 	int ncol = 3; 
@@ -581,7 +583,7 @@ void Run(string infile, int n, unsigned int seed, int niters, int burnin, int st
 	// model fitting
 	int B,G;
 	double *new_data = new double[n*(ncol+2)];
-	double *models = DoModel(data,new_data, n, niters, burnin, stride, betaAcc, gammaAcc, L,B,G,mt);
+	double *models = DoModel(data,new_data, n, niters, burnin, stride, betaAcc, gammaAcc, L,B,G,mt,in_upper);
 	
 	npara = B + G + 4; 
 
@@ -605,7 +607,7 @@ void Run(string infile, int n, unsigned int seed, int niters, int burnin, int st
 		double *BETA = MODEL + 4;
 		double *GAMMA = BETA + B;
 		CalculateLambda(new_data, BETA, GAMMA, Lambdas + i * n, n);
-		SampleLambdas(Lambdas + i * n, syndata + i * n , n, 1, UPPERLIMIT, mt);
+		SampleLambdas(Lambdas + i * n, syndata + i * n , n, 1, in_upper, mt);
 	}
 	
 	double *CI = new double[n*2];
@@ -622,7 +624,7 @@ void Run(string infile, int n, unsigned int seed, int niters, int burnin, int st
 		CI[i*2+1] = v[uindex];
 	}
 	
-	double *riskmeasure = new double[n*(UPPERLIMIT+1)];
+	double *riskmeasure = new double[n*(in_upper+1)];
 	double *risksummary = new double[m*(n+2)];
 	FILE *RISKMEASURE; 
 	if (verbose) {
@@ -633,18 +635,18 @@ void Run(string infile, int n, unsigned int seed, int niters, int burnin, int st
 	for (int s= 0; s< m; s++) {
 		int index = (int)(mt.rand() * (double)L);
 		synIndex[s] = index;
-		ImportanceSampling(Lambdas, syndata + index*n, yobs, riskmeasure, L, 1, n, UPPERLIMIT);
+		ImportanceSampling(Lambdas, syndata + index*n, yobs, riskmeasure, L, 1, n, in_upper);
 		if (verbose) {
 			//output risk measure matrix to a output file
 			for ( i = 0; i <n;i++) {
-				for (j = 0; j < (UPPERLIMIT+1); j++) {
-					fprintf(RISKMEASURE, "%10.8g ",riskmeasure[i*(UPPERLIMIT+1)+j]);
+				for (j = 0; j < (in_upper+1); j++) {
+					fprintf(RISKMEASURE, "%10.8g ",riskmeasure[i*(in_upper+1)+j]);
 				}
 				fprintf(RISKMEASURE, "\n");
 			}
 			//fprintf(RISKMEASURE, "\n");
 		}
-		CalculateRiskSummary(new_data, n, riskmeasure, risksummary+s*(n+2));
+		CalculateRiskSummary(new_data, n, riskmeasure, risksummary+s*(n+2), in_upper);
 	}
 	if (verbose) {
 		fclose(RISKMEASURE);

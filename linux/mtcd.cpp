@@ -22,6 +22,7 @@ void usage_exit(const char* app_name) {
 	cerr << " -o --output			Output file name"							<< endl;
 	cerr << " -m --nsynthetic		Number of synthetic datasets"							<< endl;
 	cerr << " -v --verbose			Output debug information"							<< endl;
+    cerr << " -u --upper			upper limit for input"							<< endl;
     cerr << endl;
 
     cerr << endl;
@@ -34,7 +35,7 @@ int main(int argc,char* argv[]) {
 	
 	// for model fitting
 	unsigned int seed;
-    int m,n, niters,burnin,stride;
+    int m,n, niters,burnin,stride,in_upper;
     string  modelfile,riskfile,synfile;
 
 	bool verbose = false;
@@ -44,7 +45,8 @@ int main(int argc,char* argv[]) {
 	burnin = 30000;
 	stride = 500;
 	seed = 0;
-	
+    in_upper = 8;
+    
 	modelfile = "models.txt";
 	synfile = "syntheticdata.txt";
 	riskfile = "riskmeasure.txt";
@@ -74,12 +76,14 @@ int main(int argc,char* argv[]) {
 					m = (int) cmdline.value_as_long();
 				else if (cmdline.match("v", "verbose", false)) 
 					verbose = true;
+                else if (cmdline.match("u", "upper", true))
+                    in_upper = (int) cmdline.value_as_long(0, 100000);
                 else
                     usage_exit(cmdline.app_name());
             } else {
                 const char* infile = cmdline.argument();
 				if (NULL != infile) {
-					Run(infile, n, seed, niters, burnin, stride, modelfile, synfile, riskfile, m,verbose);
+					Run(infile, n, seed, niters, burnin, stride, modelfile, synfile, riskfile, m,verbose,in_upper);
 				}
             }
         } 
