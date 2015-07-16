@@ -165,8 +165,8 @@ public:
           bool        has_value = false
           ) const
     {
-        return str_match(short_option, _option) ||
-               str_match(long_option, _option) && 
+        return (str_match(short_option, _option) ||
+               str_match(long_option, _option)) &&
                (!has_value || 0 != _value);
     }
 
