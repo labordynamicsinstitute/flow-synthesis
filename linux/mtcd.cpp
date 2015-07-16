@@ -77,7 +77,7 @@ int main(int argc,char* argv[]) {
 				else if (cmdline.match("v", "verbose", false)) 
 					verbose = true;
                 else if (cmdline.match("u", "upper", true))
-                    in_upper = (int) cmdline.value_as_long(0, 100000);
+                    in_upper = (int) cmdline.value_as_long(0, 100000) - 1;
                 else
                     usage_exit(cmdline.app_name());
             } else {
